@@ -4,7 +4,7 @@ import Link from "next/link";
 import Login from "./Login";
 import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
-
+import Logged from "./Logged";
 export default async function Nav() {
   const sessionInfo = await getServerSession(authOptions);
   console.log(sessionInfo);
