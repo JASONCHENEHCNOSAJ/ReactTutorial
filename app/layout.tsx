@@ -5,6 +5,8 @@ import { Roboto } from "next/font/google";
 import Nav from "./auth/Nav";
 import QueryWrapper from "./auth/QueryWrapper";
 
+// Toaster is used for popups
+
 const roboto = Roboto({
   subsets: ["latin"],
   weight: ["400", "700"],

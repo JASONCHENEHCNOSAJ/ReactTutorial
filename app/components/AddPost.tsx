@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import toast from "react-hot-toast";
 
 export default function AddPost() {
   // remember this is how you use use state. title is how you access
@@ -9,6 +10,7 @@ export default function AddPost() {
   // call useState() to set the initial value
   const [title, setTitle] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
+  let toastPostID: string;
   // creating the input form that users will use to create posts
 
   //Create a post
@@ -19,10 +21,15 @@ export default function AddPost() {
     mutationFn: async (title: string) =>
       await axios.post("/api/posts/addPost", { title }),
     onError: (error) => {
-      console.log(error);
+      if (error instanceof AxiosError) {
+        toast.dismiss(toastPostID);
+        toast.error(error.response.data.message, { id: toastPostID });
+      }
+      setIsDisabled(false);
     },
     onSuccess: (data) => {
-      console.log(data);
+      toast.dismiss(toastPostID);
+      toast.success("Successfully created post", { id: toastPostID });
       setTitle("");
       setIsDisabled(false);
     },
@@ -31,8 +38,10 @@ export default function AddPost() {
   const submitPost = async (e: React.FormEvent) => {
     // stops refreshing after pressing the button
     e.preventDefault();
+    toastPostID = toast.loading("Creating your post", { id: toastPostID });
     // disables the button after
     setIsDisabled(true);
+
     // doesn't run until you call mutate
     mutate(title);
   };
